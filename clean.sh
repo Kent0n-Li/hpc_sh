@@ -1,20 +1,24 @@
 #!/bin/bash
 
+read -p "Please enter the folder name(/data/maia/your folder name): " user_value
 
-folders_to_delete=(~/.conda/pkgs ~/.cache)
 
+# Move directories larger than 0.2GB to a new location and create symbolic links
+echo "Checking for directories larger than 0.2GB to move..."
 
-for folder in "${folders_to_delete[@]}"; do
-    if [ -d "$folder" ]; then
-        rm -rf "$folder"
-        echo "Deleted $folder and its contents."
-    else
-        echo "$folder does not exist."
+for dir in ~/*; do
+    if [ -d "$dir" ]; then
+        dir_size=$(du -s "$dir" | awk '{print $1}')
+        size_gb=$(echo "scale=2; $dir_size/1024/1024" | bc)
+        if (( $(echo "$size_gb > 0.2" | bc -l) )); then
+            echo "Moving $dir (size: $size_gb GB) to /data/maia/$user_value/"
+            mv "$dir" "/data/maia/$user_value/"
+            ln -s "/data/maia/$user_value/$(basename "$dir")" "$dir"
+            echo "Moved $dir to /data/maia/$user_value/ and created a symbolic link."
+        fi
     fi
 done
 
-
-echo "Deletion of specified folders is complete."
 
 
 
