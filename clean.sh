@@ -4,7 +4,7 @@ read -p "Please enter the folder name(/data/maia/your folder name): " user_value
 
 echo "Checking for directories larger than 0.2GB to move..."
 
-# ??????,??????,???????(.)?????(..)
+
 for dir in ~/* ~/.*; do
     if [ -d "$dir" ] && [ ! -L "$dir" ] && [ "$(basename "$dir")" != "." ] && [ "$(basename "$dir")" != ".." ]; then
         dir_size=$(du -s "$dir" 2>/dev/null | awk '{print $1}')  # ???????????
